@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArchBowlAR - The Portable Sports Arena</title>
+    
+    <meta property="og:title" content="ArchBowlAR - The Portable Sports Arena">
+    <meta property="og:description" content="Authentic bowling and archery mechanics, zero setup, fully offline.">
+    
+    <style>
+ td {border: 1px solid black; text-align: center; padding:5px; }    
+    pre {
+    font-family: inherit;      /* Uses your sans-serif body font */
+    white-space: pre-wrap;     /* Keeps your line breaks but wraps long lines */
+    word-wrap: break-word;     /* Prevents horizontal scrolling on mobile */
+    margin: 0;                 /* Removes default pre margins */
+    line-height: 1.6;          /* Matches your body text spacing */
+    color: inherit;            /* Ensures it matches the folder text color */
+}
+
+        :root { 
+            --bg: #121212; 
+            --accent: #0084ff; 
+            --text: #eee; 
+            --folder-bg: #e09f3e; 
+            --folder-text: #1a1a1a;
+            --tab-inactive: #333;
+        }
+        
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        h1 {margin-top: 0px;}
+        .container { max-width: 900px; margin: auto; }
+        header { padding: 10px 0; text-align: center; }
+        .version-badge { background: #0084ff44; color: var(--accent); padding: 4px 10px; border-radius: 4px; font-weight: bold; }
+        
+        /* Buttons */
+        .btn { display: inline-block; background: var(--accent); color: white; padding: 15px 25px; margin: 10px; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        .btn-demo { background: #28a745; }
+        
+        /* Gallery */
+        #gallery { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .gallery-item { border-radius: 10px; overflow: hidden; background: #222; }
+        .gallery-item img { width: 100%; height: auto; display: block; }
+
+/* Container for the tabs */
+.tabs { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 2px; 
+    padding-left: 5px;
+}
+
+.tab { 
+    padding: 10px 18px; 
+    background: var(--tab-inactive); 
+    color: #999;
+    cursor: pointer; 
+    border-radius: 6px 6px 0 0; 
+    font-weight: bold; 
+    transition: all 0.2s;
+    border: 1px solid #222;
+    border-bottom: none;
+    position: relative;
+    top: 2px; /* Sits slightly above the box */
+}
+
+/* The Magic Trick */
+.tab.active { 
+    background: var(--folder-bg); 
+    color: var(--folder-text); 
+    /* top: 0px;  Pushes it down to "plug into" the folder */
+    z-index: 10;
+    /* padding-bottom: 12px;  */
+    border-color: transparent;
+}
+
+/* Content Box */
+.content-box { 
+    display: none;
+    position: relative;
+    z-index: 5; /* Lower than active tab, higher than inactive */
+    padding: 30px; 
+    border-radius: 0 10px 10px 10px; 
+    background: var(--folder-bg); 
+    color: var(--folder-text); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    border-top: 5px solid var(--folder-bg); /* Matches background to create the seam */
+}
+
+.content-box.active { 
+    display: block; 
+} 
+
+box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+
+        
+        footer { margin-top: 40px; text-align: center; font-size: 0.85em; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>ArchBowlAR <span class="version-badge">Beta</span></h1>
+        <p>Your Portable Sports Arena. <button class="btn btn-demo" onclick="allTabs[8].click();">Buy/Demo</button> </p>
+    </header>
+
+<div id="dynamic-tabs" class="tabs"></div>
+
+    <div id="common" class="content-box active">
+        <h2>🎮 Common</h2>
+        <p>
+        - Defaults to AR<br>
+        - Simple VR mode, uses less power than the cameras.<br>
+        - Currently there are 3 High Res backgrounds<br>
+        - There are also 3 low res choices; black, aurora, storm.<br>
+        - Model swaps, more are planned<br>
+        - Practice mode is default.<br>
+        - Scoring mode has a togglable scoreboard.<br>
+        - Procedural arcade like sounds<br>
+        - Offline play<br>
+        - No signups or lobbies<br>
+        <!-- - Haptic feedback -planned- -->
+        </p>
+        <h3>Controls:</h3>
+        <p>
+        - Clicking left stick toggles scoreboard <br>
+        - B/Y button to exit.<br>
+        - A/X button to confirm<br>
+        - menu button toggles the menu, navigate with thumbstick<br>
+        </p>
+    </div>
+
+    <div id="archery" class="content-box">
+        <h2>🏹 Archery</h2>
+     <p>- Target distances and speed options<br>
+        - Most target movement modes are sitting friendly<br>
+        - Modes like 180 and 360 (degrees) are best played standing<br>
+        - Bow HUD, Arrow trails, Target finding arrow<br>
+        </p>
+        <h3>Controls:</h3>
+        <p>1 Squeeze grip for bow<br>
+        2 Hold hands apart<br>
+        3 Pull trigger for arrow<br>
+        4 Bring hands together to nock arrow<br>
+        5 Pull back and release trigger to fire<br>
+        6 Releasing bow first cancels the shot<br>
+        <br>
+        - After 3 arrows you switch to review mode.<br>
+        - Clicking right stick toggles arrow paths <br>
+        * You can only fire one arrow at a time, the arrow in flight has to hit something.<br>
+        </p> 
+    </div>
+
+    <div id="bowling" class="content-box">
+        <h2>🎳 Bowling</h2>
+        <p>- Natural standing play.<br>
+        - Pin modes: 5 Vshape, 9 diamond, triangle; 10, 15, 21<br>
+        - Wristwatch to show downed pins
+        </p>
+        <!-- - Bumper Lanes -planned- -->
+        <!-- - Wide Lanes, more pins -planned- -->
+        <h3>Controls:</h3>
+        <p>1 Simply grab the ball with the trigger.<br>
+        2 Throw ball and release trigger<br>
+        </p>
+        
+        <p>
+        - A/X will reset pins in practice mode.<br>
+        - In scoring pins reset on frames.<br>
+        - Throwing or dropping the ball on ground does not count as a turn. Just pull trigger to pick it up again<br>
+        - If the lane or gutter is hit by the ball it counts as a turn.<br>
+        </p>
+    </div>
+
+
+    <div id="changelog" class="content-box">
+        <h2>📜 Changelog and Planned</h2>
+        <ul>
+            <li><strong>v0.9.22:</strong><br> Put archery power stat and power meter closer to each other on hud. </li>
+            <li><strong>v0.9.21:</strong><br> restored archery hud options (speed/distance) and fixed power issues. </li>
+            <li><strong>v0.9.20:</strong><br> Added wide lane, more pin options. </li>
+            <li><strong>v0.9.19:</strong><br> Added techbow and spinebow. </li>
+            <li><strong>v0.9.18:</strong><br> Added dragonbow, bugbow and glowbow. Rapid fire now shoots up to 3 arrows. </li>
+            <li><strong>v0.9.15-17:</strong><br> internal versions. </li>                       
+            <li><strong>v0.9.14:</strong><br> Done some texturing, updated version to match save file.</li>
+            <li><strong>v0.9.9:</strong><br> Updated to godot 4.5.2</li>
+            <li><strong>v0.9.8:</strong><br> Fixed labels, fixed fades, added VR backgrounds.</li>
+            <li><strong>v0.9.7:</strong><br> Added controllers and button labels.</li>
+            <li><strong>v0.9.6:</strong><br> Added VR mode.</li>
+            <li><strong>v0.9.5:</strong><br> Fixed left throw multiplier.</li>
+            <li><strong>v0.9.4:</strong><br> Menus show up in front of you.</li>
+            <li><strong>v0.9.3:</strong><br> Target direction hint.</li>
+            <li><strong>v0.9.2:</strong><br> Fixed target movement.</li>
+            <li><strong>v0.9.1:</strong><br> Pin sounds fixed.</li>
+            <li><strong>v0.9.0:</strong><br> Initial Beta Release.</li>
+        </ul>
+                <h3>Planned feaures</h3>
+        <pre>
+        -haptics
+        -new models:
+        --Bumper bowling lane
+        --Wide lane
+        --new bows and balls
+        -new VR backgrounds
+        </pre>
+        <h3>Potential feaures, depends on sales/feedback</h3>
+        <pre>
+        -Archery balloon pop
+        -Billards
+        -Darts
+        </pre>
+      <p>
+      Want a specific feature added? Want something in the roadmap focused on?<br>
+      Want faster updates? Want something else entirely? Try one of these:<br>
+      <a href="https://paypal.me/derben3d">Donate</a> or <a href="mailto:colin@derben.ca?subject=Work-ArchBowlAR">Contact</a><br>
+      </p>
+
+    </div>
+
+    <div id="about" class="content-box">
+    <center>
+        <h2>💡 About & Credits</h2>
+        <h3>About ArchBowl</h3>
+        <p>I made this because I wanted a bowling and archery game and I wanted to play outside.<br>
+        At the time I didn't see anything like that made already, so I got started and here we are.<br>
+        No online sign ups, just install and play!<br>
+        Make sure to toss that bowling ball into the neighbours yard too..<br>
+        </p>
+        <p>ArchBowl was made by Colin (aka DerBen) using Godot, Blender and Gimp<br>
+        <p>Development assistance provided by AI collaboration.<br>
+        <p>This product was tested on humans!</p>
+        <h3>About the Developer</h3>
+        <p>I, Colin, like to work with VR/AR, 3D models, programming, games, web, etc. <br>
+        Sometimes I come up with some cool stuff! I actually like how this turned out.</p>
+    </center>
+    </div>
+
+    <div id="gallery" class="content-box">
+        <h2>📷 Gallery</h2>
+        Various images from different stages of development:<br>
+    <div id="gal"></div>
+    </div>
+
+    <div id="videos" class="content-box">
+    <center>
+      <h2>🎥 Videos</h2>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?si=Ul6iBZPRLdtY6Zjn&amp;list=PLWDskG1xPkDExODqnNCZg6xLC0q42Tz3j" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </center>
+    </div>
+
+    <div id="privacy" class="content-box">
+    </div>
+    <div id="buy" class="content-box">
+<center>
+   <!-- <section id="gallery"></section> -->
+    <!-- <a href="https://www.meta.com/s/8oawxpvzx" class="btn">Join Meta Beta</a> -->
+    <a href="https://www.meta.com/experiences/archbowlar/25759087983723604/" class="btn btn-demo">Buy Full</a>
+    <a href="demo" class="btn btn-demo">Play Demo</a>
+    <p><h3>Compare:</h3>
+    <table>
+    <tr><td><b>Full</b></td><td><b>Demo</b></td></tr>
+    <tr><td>Sounds</td><td>Silent</td></tr>
+    <tr><td>Scoring and practice</td><td>Practice only</td></tr>
+    <tr><td>Some model swaps</td><td>One model set</td></tr>
+    <tr><td>Fully offline APK</td><td>Online only in browser</td></tr>
+    <tr><td>Installed locally</td><td>Available at website</td></tr>
+    <tr><td>Full menu options</td><td>Limited menu options</td></tr>
+    <tr><td>No time limit</td><td>Limited time on website</td></tr>
+    <tr><td>Updates planned</td><td>No updates</td></tr>
+    <tr><td>Early access</td><td>Free test demo</td></tr>
+    </table>
+    
+    
+    </p>
+</center>    
+    </div>
+
+
+    <footer>
+
+    </footer>
+</div>
+
+<script>
+var allTabs=[];
+
+  fetch('pp.htm')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('privacy').innerHTML = data;
+    });
+
+
+    const images = [
+        { src: 'pic1.jpg', alt: 'Archery Target' },
+        { src: 'pic2.jpg', alt: 'Bowling Lane' },
+        { src: 'pic3.jpg', alt: 'Bowling Lane' },
+        { src: 'pic4.jpg', alt: 'Bowling Lane' },
+        { src: 'pic5.jpg', alt: 'Bowling Lane' },
+        { src: 'pic6.jpg', alt: 'Bowling Lane' }
+    ];
+
+    const gallery = document.getElementById('gal');
+    images.forEach(img => {
+        const div = document.createElement('div');
+        div.className = 'gallery-item';
+        div.innerHTML = `<img src="img/${img.src}" alt="img/${img.alt}">`;
+        gallery.appendChild(div);
+    });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const tabContainer = document.getElementById('dynamic-tabs');
+    const contentBoxes = document.querySelectorAll('.content-box');
+    
+
+    contentBoxes.forEach((box, index) => {
+        // 1. Create the tab element
+        const tab = document.createElement('div');
+        tab.className = 'tab';
+        if (box.classList.contains('active')) {
+         tab.classList.add('active');
+        }
+  
+
+        // 2. Automate the label: "about" -> "About"
+        const id = box.id;
+        const label = id.charAt(0).toUpperCase() + id.slice(1).replace('-', ' ');
+        tab.textContent = label;
+
+        // 3. The Click Logic
+        tab.onclick = () => {
+          const firstTab = allTabs[0];
+          ml=0; //detect multi line
+
+        allTabs.forEach(t => {
+        //console.log(t);
+         if (ml==0 && firstTab.offsetTop != t.offsetTop) { ml=1; }
+         
+         t.classList.remove('active');
+         t.style.order = "0"; 
+         //console.log(t.innerHTML)
+         tmp=document.getElementById(t.innerHTML.toLowerCase())
+         if (tmp) {
+         //tmp.style.display = "none";
+         tmp.classList.remove('active');
+         }
+        });
+        //console.log(allTabs)
+
+            // Show current box
+            //console.log(box,tab)
+            
+            box.classList.add('active');
+            tab.classList.add('active');
+            
+            // Activate and shuffle this tab to the end (bottom row)
+
+            if (ml==1) {
+             tab.style.order = "99"; 
+            } else {
+             tab.style.order = "0"; // Stay in place if it's a single clean row
+           }
+        };
+
+        tabContainer.appendChild(tab);
+        allTabs.push(tab);
+    });
+   
+  const urlParams = new URLSearchParams(window.location.search);
+  console.log(allTabs, allTabs[0],urlParams.get('t'));
+  if (urlParams.get('t') === 'privacy') {
+   allTabs[7].click();
+  } else{
+   allTabs[0].click();
+  }
+});
+</script>
+</body>
+</html>
